@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicConnect</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>CivicConnect</h1>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#complaints">Complaints</a></li>
+        <li><a href="#analytics">Analytics</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Sections -->
+  <section id="home">
+    <div class="hero-section">
+    <h2>Welcome to CivicConnect</h2>
+      <p class="hero-subtitle">Your platform to report civic issues, track progress, and help build a better community.</p>
+      
+      <!-- Quick Stats -->
+      <div class="stats-container" id="stats-container">
+        <!-- Stats will be loaded dynamically from API -->
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+          <button class="action-btn primary" onclick="scrollToSection('complaints')">
+            <i class="icon">📋</i>
+            View All Complaints
+          </button>
+          <button class="action-btn secondary" onclick="scrollToSection('analytics')">
+            <i class="icon">📊</i>
+            View Analytics
+          </button>
+          <button class="action-btn tertiary" onclick="scrollToSection('contact')">
+            <i class="icon">📞</i>
+            Contact Departments
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-activity">
+        <h3>Recent Activity</h3>
+        <div class="activity-list" id="recent-activity-list">
+          <!-- Recent activity will be loaded dynamically from API -->
+        </div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestions-section">
+        <h3>Suggestions for Citizens</h3>
+        <div class="suggestions-grid">
+          <div class="suggestion-card">
+            <div class="suggestion-icon">📱</div>
+            <h4>Use Mobile App</h4>
+            <p>Download our mobile app for quick reporting with GPS location and photo uploads.</p>
+          </div>
+          <div class="suggestion-card">
+            <div class="suggestion-icon">📍</div>
+            <h4>Be Specific</h4>
+            <p>Provide exact location details and clear descriptions for faster resolution.</p>
+          </div>
+          <div class="suggestion-card">
+            <div class="suggestion-icon">📸</div>
+            <h4>Add Photos</h4>
+            <p>Include photos of the issue to help departments understand the problem better.</p>
+          </div>
+          <div class="suggestion-card">
+            <div class="suggestion-icon">⏰</div>
+            <h4>Track Progress</h4>
+            <p>Check your complaint status regularly and provide updates if needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="complaints">
+    <div class="complaints-container">
+      <h2>Complaints Management</h2>
+      <p class="section-subtitle">View and manage complaints reported by citizens. Filter by category, location, and status.</p>
+      
+      <!-- Filters -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="category-filter">Category:</label>
+          <select id="category-filter" onchange="filterComplaints()">
+            <option value="all">All Categories</option>
+            <option value="road">Road Issues</option>
+            <option value="water">Water Supply</option>
+            <option value="electricity">Electricity</option>
+            <option value="sanitation">Sanitation</option>
+            <option value="parks">Parks & Recreation</option>
+            <option value="traffic">Traffic</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="status-filter">Status:</label>
+          <select id="status-filter" onchange="filterComplaints()">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="department-filter">Department:</label>
+          <select id="department-filter" onchange="filterComplaints()">
+            <option value="all">All Departments</option>
+            <option value="road">Road Department</option>
+            <option value="water">Water Department</option>
+            <option value="electrical">Electrical Department</option>
+            <option value="sanitation">Sanitation Department</option>
+            <option value="parks">Parks Department</option>
+            <option value="traffic">Traffic Department</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="location-filter">Area:</label>
+          <select id="location-filter" onchange="filterComplaints()">
+            <option value="all">All Areas</option>
+            <option value="downtown">Downtown</option>
+            <option value="residential">Residential</option>
+            <option value="commercial">Commercial</option>
+            <option value="industrial">Industrial</option>
+            <option value="suburbs">Suburbs</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-section">
+        <input type="text" id="search-complaints" placeholder="Search complaints by ID, description, or location..." onkeyup="searchComplaints()">
+        <button class="search-btn" onclick="searchComplaints()">🔍</button>
+      </div>
+
+      <!-- Complaints List -->
+      <div class="complaints-list" id="complaints-list">
+        <!-- Complaints will be loaded dynamically from API -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="page-btn" onclick="changePage(-1)">← Previous</button>
+        <span class="page-info">Page 1 of 3</span>
+        <button class="page-btn" onclick="changePage(1)">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="analytics">
+    <div class="analytics-container">
+      <h2>Analytics Dashboard</h2>
+      <p class="section-subtitle">Interactive dashboards with area-wise and department-wise insights into civic issues.</p>
+      
+      <!-- Key Metrics -->
+      <div class="metrics-grid" id="analytics-metrics">
+        <!-- Analytics metrics will be loaded dynamically from API -->
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-section">
+        <div class="chart-container">
+          <h3>Complaints by Category</h3>
+          <div class="chart-placeholder" id="category-chart">
+            <!-- Category chart will be loaded dynamically from API -->
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3>Resolution Status Distribution</h3>
+          <div class="pie-chart" id="status-chart">
+            <!-- Status chart will be loaded dynamically from API -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Area-wise Analysis -->
+      <div class="area-analysis">
+        <h3>Area-wise Analysis</h3>
+        <div class="area-grid" id="area-analysis-grid">
+          <!-- Area analysis will be loaded dynamically from API -->
+        </div>
+      </div>
+
+      <!-- Department Performance -->
+      <div class="department-performance">
+        <h3>Department Performance</h3>
+        <div class="performance-table" id="department-performance-table">
+          <!-- Department performance will be loaded dynamically from API -->
+        </div>
+      </div>
+
+      <!-- Time-based Trends -->
+      <div class="trends-section">
+        <h3>Monthly Trends</h3>
+        <div class="trend-chart" id="monthly-trends-chart">
+          <!-- Monthly trends will be loaded dynamically from API -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact-container">
+      <h2>Contact Information</h2>
+      <p class="section-subtitle">Find municipal department contacts and helpline numbers to reach out directly.</p>
+      
+      <!-- Emergency Contacts -->
+      <div class="emergency-contacts">
+        <h3>🚨 Emergency Contacts</h3>
+        <div class="emergency-grid">
+          <div class="emergency-card">s
+            <div class="emergency-icon">🚨</div>
+            <div class="emergency-info">
+              <h4>Emergency Services</h4>
+              <div class="contact-number">911</div>
+              <p>For all emergency situations</p>
+            </div>
+          </div>
+          <div class="emergency-card">
+            <div class="emergency-icon">🚒</div>
+            <div class="emergency-info">
+              <h4>Fire Department</h4>
+              <div class="contact-number">(555) 123-FIRE</div>
+              <p>Fire emergencies and rescue</p>
+            </div>
+          </div>
+          <div class="emergency-card">
+            <div class="emergency-icon">🚑</div>
+            <div class="emergency-info">
+              <h4>Ambulance</h4>
+              <div class="contact-number">(555) 123-HELP</div>
+              <p>Medical emergencies</p>
+            </div>
+          </div>
+          <div class="emergency-card">
+            <div class="emergency-icon">👮</div>
+            <div class="emergency-info">
+              <h4>Police</h4>
+              <div class="contact-number">(555) 123-COPS</div>
+              <p>Crime and safety issues</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Department Contacts -->
+      <div class="department-contacts">
+        <h3>🏢 Department Contacts</h3>
+        <div class="departments-grid">
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">🏗️</div>
+              <h4>Road Department</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-ROAD</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">roads@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">123 Infrastructure St</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">Mon-Fri 8AM-5PM</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Potholes</span>
+              <span class="service-tag">Road Repair</span>
+              <span class="service-tag">Traffic Signs</span>
+            </div>
+          </div>
+
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">💧</div>
+              <h4>Water Department</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-WATER</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">water@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">456 Water Works Ave</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">24/7 Emergency</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Water Leaks</span>
+              <span class="service-tag">Supply Issues</span>
+              <span class="service-tag">Quality</span>
+            </div>
+          </div>
+
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">⚡</div>
+              <h4>Electrical Department</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-POWER</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">electrical@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">789 Power Plant Rd</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">24/7 Emergency</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Street Lights</span>
+              <span class="service-tag">Power Outages</span>
+              <span class="service-tag">Electrical Safety</span>
+            </div>
+          </div>
+
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">🗑️</div>
+              <h4>Sanitation Department</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-TRASH</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">sanitation@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">321 Clean City Blvd</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">Mon-Fri 7AM-4PM</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Garbage Collection</span>
+              <span class="service-tag">Recycling</span>
+              <span class="service-tag">Cleanup</span>
+            </div>
+          </div>
+
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">🌳</div>
+              <h4>Parks & Recreation</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-PARKS</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">parks@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">654 Green Space Dr</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">Mon-Fri 9AM-6PM</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Park Maintenance</span>
+              <span class="service-tag">Recreation</span>
+              <span class="service-tag">Events</span>
+            </div>
+          </div>
+
+          <div class="department-card">
+            <div class="dept-header">
+              <div class="dept-icon">🚦</div>
+              <h4>Traffic Department</h4>
+            </div>
+            <div class="dept-contacts">
+              <div class="contact-item">
+                <span class="contact-label">Main Office:</span>
+                <span class="contact-value">(555) 123-TRAFFIC</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">traffic@city.gov</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span class="contact-value">987 Traffic Control St</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Hours:</span>
+                <span class="contact-value">24/7 Monitoring</span>
+              </div>
+            </div>
+            <div class="dept-services">
+              <span class="service-tag">Traffic Signals</span>
+              <span class="service-tag">Road Safety</span>
+              <span class="service-tag">Parking</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#complaints">Complaints</a></li>
+        <li><a href="#analytics">Analytics</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <p>© 2025 CivicConnect | Designed for better cities</p>
+  </footer>
+<script src="script.js"></script>
+  <!-- JavaScript -->
+
+</body>
+</html>
