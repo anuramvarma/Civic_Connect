@@ -128,7 +128,7 @@ function openChat() {
 }
 
 // API Base URL - Update this to match your backend server
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://civic-connect-v1qm.onrender.com/api';
 
 // Load Home Stats
 async function loadHomeStats() {
