@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Serve static files (HTML, CSS, JS)
+app.use(express.static('.'));
+
 // MongoDB Connection
 const MONGODB_URI = 'mongodb+srv://anuramvarmamudunuri_db_user:Anuram123456@civicconnect.vvgnurs.mongodb.net/civicconnect?retryWrites=true&w=majority';
 
@@ -74,6 +77,13 @@ const departmentSchema = new mongoose.Schema({
 const Complaint = mongoose.model('Complaint', complaintSchema);
 const User = mongoose.model('User', userSchema);
 const Department = mongoose.model('Department', departmentSchema);
+
+// Routes
+
+// Serve the main page
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
 
 // API Routes
 
