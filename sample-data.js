@@ -4,7 +4,7 @@
 const mongoose = require('mongoose');
 
 // MongoDB Connection
-const MONGODB_URI = 'mongodb+srv://anuramvarmamudunuri_db_user:Anuram123456@civicconnect.vvgnurs.mongodb.net/civicconnect?retryWrites=true&w=majority';
+const MONGODB_URI = 'mongodb+srv://SIH:sih2025@sih.ouvirm3.mongodb.net/Civic_Connect';
 
 // Schemas (same as in server.js)
 const complaintSchema = new mongoose.Schema({
@@ -28,6 +28,14 @@ const complaintSchema = new mongoose.Schema({
   },
   images: [String],
   assignedTo: { type: String },
+  mlVerification: {
+    verified: { type: Boolean, default: false },
+    confidence: { type: Number, min: 0, max: 1 },
+    analysis: { type: String },
+    severity: { type: String, enum: ['low', 'medium', 'high'] },
+    pending: { type: Boolean, default: false },
+    verifiedAt: { type: Date }
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -63,7 +71,7 @@ const sampleComplaints = [
     complaintId: 'CC-2025-001',
     title: 'Pothole near City Hospital',
     description: 'Large pothole causing traffic issues and vehicle damage near the main entrance of City Hospital on Main Street.',
-    category: 'road',
+    category: 'pothole',
     status: 'In Progress',
     department: 'Road Department',
     priority: 'High',
@@ -79,6 +87,14 @@ const sampleComplaints = [
       longitude: -74.0060
     },
     assignedTo: 'Road Maintenance Team A',
+    mlVerification: {
+      verified: true,
+      confidence: 0.95,
+      analysis: 'Deep pothole detected in image analysis. Severe damage requiring immediate attention.',
+      severity: 'high',
+      pending: false,
+      verifiedAt: new Date(Date.now() - 1.5 * 60 * 60 * 1000)
+    },
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000)  // 1 hour ago
   },
@@ -123,6 +139,14 @@ const sampleComplaints = [
       area: 'commercial',
       latitude: 40.7505,
       longitude: -73.9934
+    },
+    mlVerification: {
+      verified: true,
+      confidence: 0.87,
+      analysis: 'Garbage accumulation confirmed in images. Moderate severity requiring attention within 24 hours.',
+      severity: 'medium',
+      pending: false,
+      verifiedAt: new Date(Date.now() - 5 * 60 * 60 * 1000)
     },
     createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
     updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000)
@@ -194,6 +218,36 @@ const sampleComplaints = [
     assignedTo: 'Traffic Control Team D',
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
     updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000)      // 4 hours ago
+  },
+  {
+    complaintId: 'CC-2025-007',
+    title: 'Multiple Potholes on Highway 101',
+    description: 'Several large potholes on Highway 101 causing vehicle damage and traffic delays.',
+    category: 'pothole',
+    status: 'Pending',
+    department: 'Road Department',
+    priority: 'High',
+    user: {
+      name: 'Jennifer Lee',
+      email: 'jennifer.lee@email.com',
+      phone: '+1-555-0129'
+    },
+    location: {
+      address: 'Highway 101, Mile Marker 15-17',
+      area: 'industrial',
+      latitude: 40.7614,
+      longitude: -73.9776
+    },
+    mlVerification: {
+      verified: true,
+      confidence: 0.92,
+      analysis: 'Multiple potholes detected with varying severity. High priority due to highway location.',
+      severity: 'high',
+      pending: false,
+      verifiedAt: new Date(Date.now() - 3 * 60 * 60 * 1000)
+    },
+    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+    updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000)  // 3 hours ago
   }
 ];
 
@@ -232,6 +286,12 @@ const sampleUsers = [
     name: 'Robert Garcia',
     email: 'robert.garcia@email.com',
     phone: '+1-555-0128',
+    role: 'citizen'
+  },
+  {
+    name: 'Jennifer Lee',
+    email: 'jennifer.lee@email.com',
+    phone: '+1-555-0129',
     role: 'citizen'
   },
   {

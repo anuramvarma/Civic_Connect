@@ -90,7 +90,38 @@
   <section id="complaints">
     <div class="complaints-container">
       <h2>Complaints Management</h2>
-      <p class="section-subtitle">View and manage complaints reported by citizens. Filter by category, location, and status.</p>
+      <p class="section-subtitle">View and manage complaints reported by citizens. ML-powered verification for Potholes and Sanitation issues.</p>
+      
+      <!-- ML Verification Info -->
+      <div class="ml-info-section">
+        <div class="ml-info-card">
+          <div class="ml-icon">🤖</div>
+          <div class="ml-content">
+            <h3>AI-Powered Verification</h3>
+            <p>Our ML models automatically verify Pothole and Sanitation complaints for accuracy and severity. Verified serious issues appear at the top.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Priority Tabs -->
+      <div class="priority-tabs">
+        <button class="tab-btn active" onclick="showPriorityTab('ml-verified')" id="ml-verified-tab">
+          <span class="tab-icon">🤖</span>
+          ML Verified (High Priority)
+        </button>
+        <button class="tab-btn" onclick="showPriorityTab('all')" id="all-tab">
+          <span class="tab-icon">📋</span>
+          All Complaints
+        </button>
+        <button class="tab-btn" onclick="showPriorityTab('potholes')" id="potholes-tab">
+          <span class="tab-icon">🕳️</span>
+          Potholes Only
+        </button>
+        <button class="tab-btn" onclick="showPriorityTab('sanitation')" id="sanitation-tab">
+          <span class="tab-icon">🗑️</span>
+          Sanitation Only
+        </button>
+      </div>
       
       <!-- Filters -->
       <div class="filters-section">
@@ -98,10 +129,11 @@
           <label for="category-filter">Category:</label>
           <select id="category-filter" onchange="filterComplaints()">
             <option value="all">All Categories</option>
-            <option value="road">Road Issues</option>
+            <option value="potholes">Potholes (ML Verified)</option>
+            <option value="sanitation">Sanitation (ML Verified)</option>
+            <option value="road">Other Road Issues</option>
             <option value="water">Water Supply</option>
             <option value="electricity">Electricity</option>
-            <option value="sanitation">Sanitation</option>
             <option value="parks">Parks & Recreation</option>
             <option value="traffic">Traffic</option>
             <option value="other">Other</option>
@@ -120,15 +152,12 @@
         </div>
         
         <div class="filter-group">
-          <label for="department-filter">Department:</label>
-          <select id="department-filter" onchange="filterComplaints()">
-            <option value="all">All Departments</option>
-            <option value="road">Road Department</option>
-            <option value="water">Water Department</option>
-            <option value="electrical">Electrical Department</option>
-            <option value="sanitation">Sanitation Department</option>
-            <option value="parks">Parks Department</option>
-            <option value="traffic">Traffic Department</option>
+          <label for="ml-confidence-filter">ML Confidence:</label>
+          <select id="ml-confidence-filter" onchange="filterComplaints()">
+            <option value="all">All Confidence Levels</option>
+            <option value="high">High (90%+)</option>
+            <option value="medium">Medium (70-89%)</option>
+            <option value="low">Low (<70%)</option>
           </select>
         </div>
         
@@ -151,9 +180,26 @@
         <button class="search-btn" onclick="searchComplaints()">🔍</button>
       </div>
 
-      <!-- Complaints List -->
-      <div class="complaints-list" id="complaints-list">
-        <!-- Complaints will be loaded dynamically from API -->
+      <!-- ML Verified Complaints (Top Priority) -->
+      <div class="ml-verified-section" id="ml-verified-section">
+        <h3 class="section-title">
+          <span class="title-icon">🤖</span>
+          ML Verified High Priority Issues
+        </h3>
+        <div class="complaints-list" id="ml-verified-list">
+          <!-- ML verified complaints will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Regular Complaints List -->
+      <div class="regular-complaints-section" id="regular-complaints-section">
+        <h3 class="section-title">
+          <span class="title-icon">📋</span>
+          All Complaints
+        </h3>
+        <div class="complaints-list" id="complaints-list">
+          <!-- Regular complaints will be loaded dynamically from API -->
+        </div>
       </div>
 
       <!-- Pagination -->
@@ -264,7 +310,7 @@
 
 <!-- Department Contacts -->
 <div class="department-contacts">
-  <h3>🏢 Department Contacts (Andhra Pradesh)</h3>
+  <h3>Department Contacts (Andhra Pradesh)</h3>
   <div class="departments-grid">
 
     <div class="department-card">
@@ -275,7 +321,7 @@
       <div class="dept-contacts">
         <div class="contact-item">
           <span class="contact-label">Helpline:</span>
-          <span class="contact-value">1800-425-7770</span>
+          <span class="contact-value">0866-2469-901</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
@@ -305,7 +351,7 @@
       <div class="dept-contacts">
         <div class="contact-item">
           <span class="contact-label">Helpline:</span>
-          <span class="contact-value">1916</span>
+          <span class="contact-value">1902</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
@@ -339,7 +385,7 @@
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
-          <span class="contact-value">customercare@apspdcl.in</span>
+          <span class="contact-value">support@apspdcl.in</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Address:</span>
@@ -365,7 +411,7 @@
       <div class="dept-contacts">
         <div class="contact-item">
           <span class="contact-label">Helpline:</span>
-          <span class="contact-value">1800-425-1667</span>
+          <span class="contact-value">0816-425-1667</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
@@ -395,7 +441,7 @@
       <div class="dept-contacts">
         <div class="contact-item">
           <span class="contact-label">Helpline:</span>
-          <span class="contact-value">1800-425-4647</span>
+          <span class="contact-value">0881-425-4647</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
@@ -425,7 +471,7 @@
       <div class="dept-contacts">
         <div class="contact-item">
           <span class="contact-label">Helpline:</span>
-          <span class="contact-value">1099</span>
+          <span class="contact-value">1073</span>
         </div>
         <div class="contact-item">
           <span class="contact-label">Email:</span>
@@ -450,6 +496,19 @@
   </div>
 </div>
 
+  <!-- Complaint Details Modal -->
+  <div id="complaint-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Complaint Details</h2>
+        <span class="close" onclick="closeComplaintModal()">&times;</span>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Complaint details will be loaded here -->
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer>
     <nav>
@@ -460,7 +519,7 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
-    <p>© 2025 CivicConnect V1.0.0 | Designed for better cities</p>
+    <p>© 2025 CivicConnect Version @ 1.2.0 | Designed for better cities</p>
   </footer>
 <script src="script.js"></script>
   <!-- JavaScript -->
