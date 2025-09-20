@@ -823,56 +823,106 @@ function openChat() {
   // In a real application, this would open a chat widget
 }
 
-// API Base URL - Update this to match your backend server
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Base URL - Automatically detect environment
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:5000/api' 
+  : `${window.location.protocol}//${window.location.host}/api`;
+
+// Debug function to test API connectivity
+async function debugAPI() {
+  console.log('🔍 Debug API Connectivity:');
+  console.log('   Current URL:', window.location.href);
+  console.log('   API Base URL:', API_BASE_URL);
+  
+  try {
+    // Test health endpoint
+    console.log('   Testing health endpoint...');
+    const healthResponse = await fetch(`${API_BASE_URL}/health`);
+    const healthData = await healthResponse.json();
+    console.log('   ✅ Health:', healthData);
+    
+    // Test stats endpoint
+    console.log('   Testing stats endpoint...');
+    const statsResponse = await fetch(`${API_BASE_URL}/stats`);
+    const statsData = await statsResponse.json();
+    console.log('   ✅ Stats:', statsData);
+    
+    // Test complaints endpoint
+    console.log('   Testing complaints endpoint...');
+    const complaintsResponse = await fetch(`${API_BASE_URL}/complaints`);
+    const complaintsData = await complaintsResponse.json();
+    console.log('   ✅ Complaints:', complaintsData.length, 'items');
+    
+    return true;
+  } catch (error) {
+    console.error('   ❌ API Error:', error);
+    return false;
+  }
+}
+
+// Make debug function available globally
+window.debugAPI = debugAPI;
 
 // Load Home Stats
 async function loadHomeStats() {
   try {
+    console.log('Loading home stats from:', `${API_BASE_URL}/stats`);
     const response = await fetch(`${API_BASE_URL}/stats`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const stats = await response.json();
+    console.log('Home stats received:', stats);
     
     const container = document.getElementById('stats-container');
-    container.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-number">${stats.totalComplaints}</div>
-        <div class="stat-label">Total Complaints</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">${stats.resolvedIssues}</div>
-        <div class="stat-label">Resolved Issues</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">${stats.activeDepartments}</div>
-        <div class="stat-label">Active Departments</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">${stats.resolutionRate}%</div>
-        <div class="stat-label">Resolution Rate</div>
-      </div>
-    `;
+    if (container) {
+      container.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${stats.totalComplaints || 0}</div>
+          <div class="stat-label">Total Complaints</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${stats.resolvedIssues || 0}</div>
+          <div class="stat-label">Resolved Issues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${stats.activeDepartments || 0}</div>
+          <div class="stat-label">Active Departments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${stats.resolutionRate || 0}%</div>
+          <div class="stat-label">Resolution Rate</div>
+        </div>
+      `;
+    } else {
+      console.error('Stats container not found');
+    }
   } catch (error) {
     console.error('Error loading home stats:', error);
     // Fallback to default values
     const container = document.getElementById('stats-container');
-    container.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Total Complaints</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Resolved Issues</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Active Departments</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">0%</div>
-        <div class="stat-label">Resolution Rate</div>
-      </div>
-    `;
+    if (container) {
+      container.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Total Complaints</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Resolved Issues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Active Departments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0%</div>
+          <div class="stat-label">Resolution Rate</div>
+        </div>
+      `;
+    }
   }
 }
 
@@ -903,8 +953,15 @@ async function loadRecentActivity() {
 // Load Complaints with ML Verification
 async function loadComplaints() {
   try {
+    console.log('Loading complaints from:', `${API_BASE_URL}/complaints`);
     const response = await fetch(`${API_BASE_URL}/complaints`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const complaints = await response.json();
+    console.log('Complaints received:', complaints.length);
     
     // Separate ML verified complaints from regular complaints
     const mlVerifiedComplaints = complaints.filter(complaint => 
@@ -916,6 +973,9 @@ async function loadComplaints() {
       !complaint.mlVerification || !complaint.mlVerification.verified
     );
     
+    console.log('ML Verified complaints:', mlVerifiedComplaints.length);
+    console.log('Regular complaints:', regularComplaints.length);
+    
     // Load ML verified complaints
     loadMLVerifiedComplaints(mlVerifiedComplaints);
     
@@ -925,7 +985,15 @@ async function loadComplaints() {
   } catch (error) {
     console.error('Error loading complaints:', error);
     const container = document.getElementById('complaints-list');
-    container.innerHTML = '<p>No complaints available</p>';
+    if (container) {
+      container.innerHTML = `
+        <div class="no-data">
+          <div style="font-size: 24px; margin-bottom: 20px; color: #dc2626;">⚠️</div>
+          <p style="color: #dc2626; font-weight: 600;">Failed to load complaints: ${error.message}</p>
+          <p style="color: #6b7280; margin-top: 10px;">Please check your internet connection and try again.</p>
+        </div>
+      `;
+    }
   }
 }
 
@@ -1478,6 +1546,10 @@ function formatTimeAgo(dateString) {
 
 // Load all dynamic data on page load
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('🚀 CivicConnect Application Starting...');
+  console.log('   Environment:', window.location.hostname === 'localhost' ? 'Development' : 'Production');
+  console.log('   API Base URL:', API_BASE_URL);
+  
   const faqAnswers = document.querySelectorAll('.faq-answer');
   faqAnswers.forEach(answer => {
     answer.style.display = 'none';
@@ -1507,6 +1579,32 @@ document.addEventListener('DOMContentLoaded', function() {
       showFallbackAnalytics();
     }
   }, 3000);
+  
+  // Add fallback stats display after 5 seconds if no data loaded
+  setTimeout(() => {
+    const statsContainer = document.getElementById('stats-container');
+    if (statsContainer && statsContainer.children.length === 0) {
+      console.log('Stats not loaded, showing fallback data');
+      showFallbackStats();
+    }
+  }, 5000);
+  
+  // Add fallback complaints display after 7 seconds if no data loaded
+  setTimeout(() => {
+    const complaintsContainer = document.getElementById('complaints-list');
+    if (complaintsContainer && complaintsContainer.children.length === 0) {
+      console.log('Complaints not loaded, showing fallback data');
+      showFallbackComplaints();
+    }
+  }, 7000);
+  
+  // Auto-retry failed loads
+  setTimeout(() => {
+    console.log('🔄 Auto-retrying failed data loads...');
+    loadHomeStats();
+    loadComplaints();
+    loadAnalyticsData();
+  }, 10000);
 });
 
 // Show fallback analytics data
@@ -1687,6 +1785,45 @@ function testModal() {
 
 // Make testModal available globally for testing
 window.testModal = testModal;
+
+// Show fallback stats data
+function showFallbackStats() {
+  const container = document.getElementById('stats-container');
+  if (container) {
+    container.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Total Complaints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Resolved Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Active Departments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0%</div>
+        <div class="stat-label">Resolution Rate</div>
+      </div>
+    `;
+  }
+}
+
+// Show fallback complaints data
+function showFallbackComplaints() {
+  const container = document.getElementById('complaints-list');
+  if (container) {
+    container.innerHTML = `
+      <div class="no-data">
+        <div style="font-size: 24px; margin-bottom: 20px; color: #6b7280;">📋</div>
+        <p style="color: #6b7280; font-weight: 600;">Loading complaints...</p>
+        <p style="color: #9ca3af; margin-top: 10px;">Please wait while we fetch the latest data.</p>
+      </div>
+    `;
+  }
+}
 
 // Test analytics endpoint
 async function testAnalyticsEndpoint() {
