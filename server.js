@@ -390,7 +390,7 @@ async function processMLQueue() {
 // Process complaint directly with Flask YOLO model
 async function processComplaintDirectly(complaintId) {
   try {
-    console.log(`🤖 Processing complaint ${complaintId} directly with Flask YOLO model...`);
+    console.log(`🤖 Processing complaint ${complaintId} directly with Flask model...`);
     
     const complaint = await Complaint.findById(complaintId);
     if (!complaint) {
@@ -404,7 +404,7 @@ async function processComplaintDirectly(complaintId) {
       if (healthResponse.status !== 200) {
         throw new Error('Flask model not healthy');
       }
-      console.log('✅ Flask YOLO model is healthy');
+      console.log('✅ Flask model is healthy');
     } catch (error) {
       console.log('❌ Flask model not available:', error.message);
       console.log('💡 Make sure Flask model is running: cd SIH && python app.py');
@@ -413,7 +413,7 @@ async function processComplaintDirectly(complaintId) {
       return {
         verified: false,
         confidence: 0.1,
-        analysis: 'Flask YOLO model not available. Please ensure the model is running.',
+        analysis: 'Flask model not available. Please ensure the model is running.',
         severity: 'low',
         pending: false,
         verifiedAt: new Date()
@@ -434,7 +434,7 @@ async function processComplaintDirectly(complaintId) {
         console.log('✅ Process_all completed');
       }
       if (processResponse.status === 200) {
-        console.log('✅ Flask YOLO processing completed');
+        console.log('Flask processing completed');
         
         // Handle individual complaint response
         if (processResponse.data.complaintId) {
@@ -466,14 +466,14 @@ async function processComplaintDirectly(complaintId) {
           let analysis = '';
           if (verified) {
             if (potholeCount > 2) {
-              analysis = `SIH YOLO model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
+              analysis = `Model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
             } else if (potholeCount > 1) {
-              analysis = `SIH YOLO model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
+              analysis = `Model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
             } else {
-              analysis = `SIH YOLO model detected ${potholeCount} pothole. Low severity requiring attention.`;
+              analysis = `Model detected ${potholeCount} pothole. Low severity requiring attention.`;
             }
           } else {
-            analysis = 'SIH YOLO model did not detect any potholes in the image.';
+            analysis = 'Model did not detect any potholes in the image.';
           }
 
           return {
@@ -515,7 +515,7 @@ async function processComplaintDirectly(complaintId) {
         return {
           verified: false,
           confidence: 0.1,
-          analysis: 'Flask YOLO processing failed.',
+          analysis: 'Flask processing failed.',
           severity: 'low',
           pending: false,
           verifiedAt: new Date()
@@ -526,7 +526,7 @@ async function processComplaintDirectly(complaintId) {
       return {
         verified: false,
         confidence: 0.1,
-        analysis: `Flask YOLO processing error: ${error.message}`,
+        analysis: `Flask processing error: ${error.message}`,
         severity: 'low',
         pending: false,
         verifiedAt: new Date()
@@ -548,7 +548,7 @@ async function processComplaintDirectly(complaintId) {
 // Process complaint with SIH Flask YOLO model
 async function processComplaintWithML(complaintId, complaintData) {
   try {
-    console.log(`🤖 Processing complaint ${complaintId} with SIH Flask YOLO model...`);
+    console.log(`🤖 Processing complaint ${complaintId} with SIH Flask model...`);
     
     // Update status to processing
     await Complaint.findByIdAndUpdate(complaintId, {
@@ -911,21 +911,71 @@ app.get('/api/analytics', async (req, res) => {
 
     console.log('Average resolution time:', avgResolutionTime);
 
-    // Status data - using correct field names
+    // Status data - normalize status values and provide accurate distribution
     const statusData = await Complaint.aggregate([
       { $group: { _id: '$status', count: { $sum: 1 } } },
       { $project: { status: '$_id', count: 1, _id: 0 } }
     ]);
 
-    console.log('Status data:', statusData);
+    console.log('Raw status data:', statusData);
 
-    // Calculate status percentages
-    const statusWithPercentage = statusData.map(item => ({
-      status: item.status,
-      percentage: Math.round((item.count / totalComplaints) * 100)
-    }));
+    // Normalize and consolidate status values
+    const normalizedStatusData = {};
+    
+    statusData.forEach(item => {
+      const status = item.status ? item.status.toLowerCase().trim() : 'unknown';
+      let normalizedStatus;
+      
+      // Normalize status values
+      switch (status) {
+        case 'completed':
+        case 'resolved':
+        case 'fixed':
+          normalizedStatus = 'completed';
+          break;
+        case 'pending':
+        case 'new':
+        case 'submitted':
+          normalizedStatus = 'pending';
+          break;
+        case 'in-progress':
+        case 'in progress':
+        case 'processing':
+        case 'working':
+          normalizedStatus = 'in-progress';
+          break;
+        case 'received':
+        case 'acknowledged':
+        case 'accepted':
+          normalizedStatus = 'received';
+          break;
+        case 'rejected':
+        case 'not accepted':
+        case 'denied':
+          normalizedStatus = 'rejected';
+          break;
+        case 'assigned':
+        case 'allocated':
+          normalizedStatus = 'assigned';
+          break;
+        default:
+          normalizedStatus = 'unknown';
+      }
+      
+      if (!normalizedStatusData[normalizedStatus]) {
+        normalizedStatusData[normalizedStatus] = 0;
+      }
+      normalizedStatusData[normalizedStatus] += item.count;
+    });
 
-    console.log('Status with percentage:', statusWithPercentage);
+    // Convert to array format and calculate percentages
+    const statusWithPercentage = Object.entries(normalizedStatusData)
+      .map(([status, count]) => ({
+        status: status,
+        count: count,
+        percentage: Math.round((count / totalComplaints) * 100)
+      }))
+      .sort((a, b) => b.count - a.count); // Sort by count descending
 
     // Area data - using location field as area since it contains address info
     const areaData = await Complaint.aggregate([
@@ -945,12 +995,47 @@ app.get('/api/analytics', async (req, res) => {
       }
     ]);
 
-    // Category data - since category field doesn't exist, we'll create mock data based on department
-    const categoryData = await Complaint.aggregate([
-      { $group: { _id: '$department', count: { $sum: 1 } } },
-      { $project: { category: '$_id', count: 1, _id: 0 } },
-      { $sort: { count: -1 } }
-    ]);
+    // Category data - detect categories based on complaint content and filter to only Potholes and Sanitation
+    const allComplaints = await Complaint.find({}, 'Title Description status');
+    
+    // Detect categories based on content
+    const detectCategory = (title, description) => {
+      const text = (title + ' ' + description).toLowerCase();
+      if (text.includes('pothole') || text.includes('road') || text.includes('street') || text.includes('highway') || text.includes('pavement') || text.includes('asphalt') || text.includes('crack') || text.includes('damage')) {
+        return 'Potholes';
+      }
+      if (text.includes('garbage') || text.includes('sanitation') || text.includes('waste') || text.includes('trash') || text.includes('cleanup') || text.includes('dirty')) {
+        return 'Sanitation';
+      }
+      return null; // Don't include other categories
+    };
+    
+    // Count categories with Fixed/Pending breakdown
+    const categoryCounts = {};
+    allComplaints.forEach(complaint => {
+      const category = detectCategory(complaint.Title, complaint.Description);
+      if (category) {
+        if (!categoryCounts[category]) {
+          categoryCounts[category] = { fixed: 0, pending: 0, total: 0 };
+        }
+        categoryCounts[category].total++;
+        if (complaint.status === 'completed') {
+          categoryCounts[category].fixed++;
+        } else {
+          categoryCounts[category].pending++;
+        }
+      }
+    });
+    
+    // Convert to array format and sort by total count
+    const categoryData = Object.entries(categoryCounts)
+      .map(([category, counts]) => ({ 
+        category, 
+        count: counts.total,
+        fixed: counts.fixed,
+        pending: counts.pending
+      }))
+      .sort((a, b) => b.count - a.count);
 
     // Department data
     const departmentData = await Complaint.aggregate([

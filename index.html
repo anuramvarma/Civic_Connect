@@ -9,7 +9,17 @@
 <body>
   <!-- Header -->
   <header>
-    <h1>CivicConnect</h1>
+    <div class="header-brand">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <img src="assets/logoweb.png" alt="CivicConnect Logo" class="logo-image">
+        </div>
+        <div class="brand-text">
+          <h1>CivicConnect</h1>
+          <span class="tagline">Connecting Citizens & City</span>
+        </div>
+      </div>
+    </div>
     <nav>
       <ul>
         <li><a href="#home">Home</a></li>
@@ -92,22 +102,22 @@
       <h2>Complaints Management</h2>
       <p class="section-subtitle">View and manage complaints reported by citizens. ML-powered verification for Potholes and Sanitation issues.</p>
       
-      <!-- ML Verification Info -->
+      <!-- ML Verification Info
       <div class="ml-info-section">
         <div class="ml-info-card">
-          <div class="ml-icon">🤖</div>
+          <div class="ml-icon"></div>
           <div class="ml-content">
             <h3>AI-Powered Verification</h3>
             <p>Our ML models automatically verify Pothole and Sanitation complaints for accuracy and severity. Verified serious issues appear at the top.</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Priority Tabs -->
       <div class="priority-tabs">
         <button class="tab-btn active" onclick="showPriorityTab('ml-verified')" id="ml-verified-tab">
-          <span class="tab-icon">🤖</span>
-          ML Verified (High Priority)
+          <span class="tab-icon"></span>
+          Verified (High Priority)
         </button>
         <button class="tab-btn" onclick="showPriorityTab('all')" id="all-tab">
           <span class="tab-icon">📋</span>
@@ -165,11 +175,11 @@
           <label for="location-filter">Area:</label>
           <select id="location-filter" onchange="filterComplaints()">
             <option value="all">All Areas</option>
-            <option value="downtown">Downtown</option>
+            <!-- <option value="downtown">Downtown</option>
             <option value="residential">Residential</option>
             <option value="commercial">Commercial</option>
             <option value="industrial">Industrial</option>
-            <option value="suburbs">Suburbs</option>
+            <option value="suburbs">Suburbs</option> -->
           </select>
         </div>
       </div>
@@ -183,8 +193,8 @@
       <!-- ML Verified Complaints (Top Priority) -->
       <div class="ml-verified-section" id="ml-verified-section">
         <h3 class="section-title">
-          <span class="title-icon">🤖</span>
-          ML Verified High Priority Issues
+          <span class="title-icon"></span>
+          Verified with high Priority Issues
         </h3>
         <div class="complaints-list" id="ml-verified-list">
           <!-- ML verified complaints will be loaded here -->
@@ -205,7 +215,7 @@
       <!-- Pagination -->
       <div class="pagination">
         <button class="page-btn" onclick="changePage(-1)">← Previous</button>
-        <span class="page-info">Page 1 of 3</span>
+        <span class="page-info">Page 1 of 1</span>
         <button class="page-btn" onclick="changePage(1)">Next →</button>
       </div>
     </div>
@@ -511,15 +521,18 @@
 
   <!-- Footer -->
   <footer>
-    <nav>
+    <!-- <nav>
       <ul>
         <li><a href="#home">Home</a></li>
         <li><a href="#complaints">Complaints</a></li>
         <li><a href="#analytics">Analytics</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
-    </nav>
-    <p>© 2025 CivicConnect Version @ 1.2.0 | Designed for better cities</p>
+    </nav> -->
+    <p>© 2025 Civic Complaints Management System | Developed for Smart City Initiatives  
+      Ensuring transparency, accountability, and faster grievance redressal.
+    Developed by Team Nexus</p>
+    </p>
   </footer>
 <script src="script.js"></script>
   <!-- JavaScript -->

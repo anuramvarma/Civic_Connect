@@ -178,14 +178,14 @@ async function findAndProcessNewComplaints() {
             let analysis = '';
             if (verified) {
               if (potholeCount > 2) {
-                analysis = `SIH YOLO model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
+                analysis = `Model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
               } else if (potholeCount > 1) {
-                analysis = `SIH YOLO model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
+                analysis = `Model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
               } else {
-                analysis = `SIH YOLO model detected ${potholeCount} pothole. Low severity requiring attention.`;
+                analysis = `Model detected ${potholeCount} pothole. Low severity requiring attention.`;
               }
             } else {
-              analysis = 'SIH YOLO model did not detect any potholes in the image.';
+              analysis = 'Model did not detect any potholes in the image.';
             }
 
             // Update the complaint with ML results

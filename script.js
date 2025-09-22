@@ -158,15 +158,15 @@ async function viewMLDetails(complaintId) {
         modal.innerHTML = `
           <div class="modal-content">
             <div class="modal-header">
-              <h2>🚧 SIH YOLO Pothole Analysis</h2>
+              <h2>🚧Pothole Analysis</h2>
               <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
             </div>
             <div class="modal-body">
               <div class="ml-analysis-section">
-                <h3>📊 SIH YOLO Model Analysis</h3>
+                <h3>Model Analysis</h3>
                 <div class="ml-metrics">
                   <div class="metric-item">
-                    <span class="metric-label">Confidence Score:</span>
+                    <span class="metric-label">Confidence level:</span>
                     <span class="metric-value ${confidenceLevel}">${confidenceIcon} ${confidencePercent}%</span>
                   </div>
                   <div class="metric-item">
@@ -176,36 +176,36 @@ async function viewMLDetails(complaintId) {
                   <div class="metric-item">
                     <span class="metric-label">Detection Status:</span>
                     <span class="metric-value ${mlVerification.verified ? 'verified' : 'not-verified'}">
-                      ${mlVerification.verified ? '✅ Pothole Detected' : '❌ No Pothole Detected'}
+                      ${mlVerification.verified ? 'Detected' : 'Not Detected'}
                     </span>
                   </div>
                   <div class="metric-item">
-                    <span class="metric-label">Processing Status:</span>
+                    <span class="metric-label">Processing:</span>
                     <span class="metric-value ${mlVerification.status || 'unknown'}">${(mlVerification.status || 'unknown').toUpperCase()}</span>
                   </div>
                 </div>
                 
                 <div class="ml-analysis-details">
-                  <h4>🔍 SIH YOLO Analysis Results</h4>
+                  <h4>🔍Analysis Result</h4>
                   <p><strong>Complaint:</strong> ${complaint.title}</p>
-                  <p><strong>YOLO Analysis:</strong> ${mlVerification.analysis || 'No analysis available'}</p>
+                  <p><strong>Analysis:</strong> ${mlVerification.analysis || 'No analysis available'}</p>
                   <p><strong>Image URL:</strong> <a href="${complaint.imageUrl || complaint.images}" target="_blank">View Image</a></p>
                   <p><strong>Processed At:</strong> ${mlVerification.verifiedAt ? new Date(mlVerification.verifiedAt).toLocaleString() : 'Not processed'}</p>
                 </div>
                 
                 <div class="ml-recommendations">
-                  <h4>💡 SIH YOLO Recommendations</h4>
+                  <h4>Recommendations</h4>
                   <ul>
                     ${mlVerification.verified ? `
-                      <li> Pothole verified by SIH YOLO model</li>
+                      <li> Pothole verified by model</li>
                       <li> Detection confidence: ${confidencePercent}%</li>
                       <li> Severity: ${(mlVerification.severity || 'low').toUpperCase()}</li>
                       <li> ${mlVerification.severity === 'high' ? 'Prioritize immediately - Multiple potholes detected' : mlVerification.severity === 'medium' ? 'Address within 24 hours - Moderate pothole damage' : 'Schedule for repair - Single pothole detected'}</li>
                     ` : `
-                      <li> No potholes detected by SIH YOLO model</li>
-                      <li> Manual verification recommended</li>
-                      <li> Image may need better quality or angle</li>
-                      <li> Consider resubmission if pothole persists</li>
+                      <li>No potholes detected by model</li>
+                      <li>Manual verification recommended</li>
+                      <li>Image may need better quality or angle</li>
+                      <li>Consider resubmission if pothole persists</li>
                     `}
                   </ul>
                 </div>
@@ -973,7 +973,7 @@ async function loadComplaints() {
       !complaint.mlVerification || !complaint.mlVerification.verified
     );
     
-    console.log('ML Verified complaints:', mlVerifiedComplaints.length);
+    console.log('Verified complaints:', mlVerifiedComplaints.length);
     console.log('Regular complaints:', regularComplaints.length);
     
     // Load ML verified complaints
@@ -1005,7 +1005,7 @@ function loadMLVerifiedComplaints(complaints) {
     container.innerHTML = `
       <div class="no-data">
         <div style="font-size: 24px; margin-bottom: 20px;">🤖</div>
-        <p>No ML verified complaints at the moment</p>
+        <p>No verified complaints at the moment</p>
         <p style="font-size: 14px; color: #64748b; margin-top: 10px;">ML models are continuously analyzing new complaints</p>
       </div>
     `;
@@ -1053,9 +1053,9 @@ function createComplaintCard(complaint, isMLVerified = false) {
       </span>
     `;
   } else if (mlVerification.analysis && mlVerification.analysis.includes('ML model only processes pothole complaints')) {
-    mlBadge = '<span class="ml-badge not-applicable">⚠️ Non-Pothole (ML focuses on potholes only)</span>';
+    mlBadge = '<span class="ml-badge not-applicable"> Non-Pothole</span>';
   } else if (mlVerification.pending) {
-    mlBadge = '<span class="ml-badge pending-verification">⏳ SIH YOLO Processing...</span>';
+    mlBadge = '<span class="ml-badge pending-verification">⏳Processing...</span>';
   } else if (isPothole) {
     mlBadge = '<span class="ml-badge not-verified">❌ Pothole Not Detected</span>';
   }
@@ -1081,13 +1081,23 @@ function createComplaintCard(complaint, isMLVerified = false) {
           <strong>Location:</strong> ${complaint.location.address}<br>
           ${mlVerification.verified ? `
             <div class="ml-analysis-summary">
-              <strong>🤖 ML Analysis:</strong> ${mlVerification.analysis || 'Issue verified by AI model'}<br>
-              <strong>Severity:</strong> <span class="severity-badge ${mlVerification.severity || 'low'}">${(mlVerification.severity || 'low').toUpperCase()}</span>
-              <strong>Confidence:</strong> <span class="confidence-badge ${getConfidenceLevel(mlVerification.confidence)}">${Math.round((mlVerification.confidence || 0) * 100)}%</span>
+              <div class="analysis-text">
+                <strong>Analysis:</strong> ${mlVerification.analysis || 'Issue verified by AI model'}
+              </div>
+              <div class="ml-metrics-row">
+                <div class="ml-metric">
+                  <span class="ml-metric-label">Severity:</span>
+                  <span class="severity-badge ${mlVerification.severity || 'low'}">${(mlVerification.severity || 'low').toUpperCase()}</span>
+                </div>
+                <div class="ml-metric">
+                  <span class="ml-metric-label">Confidence:</span>
+                  <span class="confidence-badge ${getConfidenceLevel(mlVerification.confidence)}">${Math.round((mlVerification.confidence || 0) * 100)}%</span>
+                </div>
+              </div>
             </div>
           ` : mlVerification.pending ? `
             <div class="ml-pending">
-              <strong>⏳ ML Processing:</strong> SIH YOLO model is analyzing this complaint...
+              <strong>Processing:</strong> Analyzing this complaint...
             </div>
           ` : ''}
         </div>
@@ -1283,20 +1293,38 @@ function loadCategoryChart(categoryData) {
   // Filter out null categories and provide fallback names
   const validCategoryData = categoryData.map(item => ({
     ...item,
-    category: item.category || 'General'
+    category: item.category || 'General',
+    fixed: item.fixed || 0,
+    pending: item.pending || 0
   }));
   
   const maxValue = Math.max(...validCategoryData.map(item => item.count));
   
   container.innerHTML = `
     <div class="chart-bars">
-      ${validCategoryData.map(item => `
+      ${validCategoryData.map(item => {
+        const fixedHeight = Math.max((item.fixed / maxValue) * 100, 5); // Minimum 5% height
+        const pendingHeight = Math.max((item.pending / maxValue) * 100, 5); // Minimum 5% height
+        
+        return `
         <div class="bar-group">
-          <div class="bar ${(item.category || 'general').toLowerCase().replace(/\s+/g, '-')}" style="height: ${(item.count / maxValue) * 100}%"></div>
+          <div class="bar-container">
+            <div class="bar-fixed ${(item.category || 'general').toLowerCase().replace(/\s+/g, '-')}" 
+                 style="height: ${fixedHeight}%" 
+                 title="Fixed: ${item.fixed}"></div>
+            <div class="bar-pending ${(item.category || 'general').toLowerCase().replace(/\s+/g, '-')}" 
+                 style="height: ${pendingHeight}%" 
+                 title="Pending: ${item.pending}"></div>
+          </div>
           <div class="bar-label">${item.category || 'General'}</div>
           <div class="bar-value">${item.count}</div>
+          <div class="bar-breakdown">
+            <span class="fixed-count">Fixed: ${item.fixed}</span>
+            <span class="pending-count">Pending: ${item.pending}</span>
+          </div>
         </div>
-      `).join('')}
+        `;
+      }).join('')}
     </div>
   `;
 }
@@ -1659,9 +1687,28 @@ function showFallbackCharts() {
     categoryContainer.innerHTML = `
       <div class="chart-bars">
         <div class="bar-group">
-          <div class="bar general" style="height: 100%"></div>
-          <div class="bar-label">General</div>
-          <div class="bar-value">6</div>
+          <div class="bar-container">
+            <div class="bar-fixed potholes" style="height: 50%" title="Fixed: 4"></div>
+            <div class="bar-pending potholes" style="height: 50%" title="Pending: 4"></div>
+          </div>
+          <div class="bar-label">Potholes</div>
+          <div class="bar-value">8</div>
+          <div class="bar-breakdown">
+            <span class="fixed-count">Fixed: 4</span>
+            <span class="pending-count">Pending: 4</span>
+          </div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-container">
+            <div class="bar-fixed sanitation" style="height: 25%" title="Fixed: 2"></div>
+            <div class="bar-pending sanitation" style="height: 37.5%" title="Pending: 3"></div>
+          </div>
+          <div class="bar-label">Sanitation</div>
+          <div class="bar-value">5</div>
+          <div class="bar-breakdown">
+            <span class="fixed-count">Fixed: 2</span>
+            <span class="pending-count">Pending: 3</span>
+          </div>
         </div>
       </div>
     `;
@@ -1671,11 +1718,20 @@ function showFallbackCharts() {
   const statusContainer = document.getElementById('status-chart');
   if (statusContainer) {
     statusContainer.innerHTML = `
-      <div class="pie-slice completed" data-percentage="17">
-        <div class="slice-label">Completed (17%)</div>
+      <div class="pie-slice pending" data-percentage="11">
+        <div class="slice-label">Pending (11%)</div>
       </div>
-      <div class="pie-slice pending" data-percentage="83">
-        <div class="slice-label">Pending (83%)</div>
+      <div class="pie-slice rejected" data-percentage="37">
+        <div class="slice-label">Not Accepted (37%)</div>
+      </div>
+      <div class="pie-slice received" data-percentage="5">
+        <div class="slice-label">Accepted (5%)</div>
+      </div>
+      <div class="pie-slice in-progress" data-percentage="5">
+        <div class="slice-label">In Progress (5%)</div>
+      </div>
+      <div class="pie-slice completed" data-percentage="42">
+        <div class="slice-label">Completed (42%)</div>
       </div>
     `;
   }

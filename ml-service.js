@@ -136,8 +136,8 @@ class MLService {
   // Call your SIH Flask YOLO model for pothole detection
   async analyzePothole(imageUrl, title, description) {
     try {
-      console.log(`🔍 Analyzing pothole complaint with SIH YOLO model: ${imageUrl}`);
-      console.log(`🌐 Calling Flask YOLO model: ${ML_CONFIG.FLASK_MODEL_URL}`);
+      console.log(`🔍 Analyzing pothole complaint with model: ${imageUrl}`);
+      console.log(`🌐 Calling Flask  model: ${ML_CONFIG.FLASK_MODEL_URL}`);
       
       // First check if Flask model is healthy
       let isHealthy = false;
@@ -148,7 +148,7 @@ class MLService {
         });
         
         if (healthResponse.status === 200) {
-          console.log('✅ SIH Flask YOLO model is healthy, processing...');
+          console.log('✅ Flask  model is healthy, processing...');
           isHealthy = true;
         }
       } catch (healthError) {
@@ -168,7 +168,7 @@ class MLService {
 
       if (response.status === 200) {
         const mlResult = response.data;
-        console.log(`✅ SIH Flask YOLO model response:`, mlResult);
+       // console.log(`✅ SIH FlaskYOLO  model response:`, mlResult);
 
         // Your Flask model processes all complaints and returns a list of results
         if (mlResult.inserted && Array.isArray(mlResult.inserted)) {
@@ -204,14 +204,14 @@ class MLService {
             let analysis = '';
             if (verified) {
               if (potholeCount > 2) {
-                analysis = `SIH YOLO model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
+                analysis = `Model detected ${potholeCount} potholes. Multiple potholes requiring immediate attention.`;
               } else if (potholeCount > 1) {
-                analysis = `SIH YOLO model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
+                analysis = `Model detected ${potholeCount} potholes. Moderate severity requiring attention within 24 hours.`;
               } else {
-                analysis = `SIH YOLO model detected ${potholeCount} pothole. Low severity requiring attention.`;
+                analysis = `Model detected ${potholeCount} pothole. Low severity requiring attention.`;
               }
             } else {
-              analysis = 'SIH YOLO model did not detect any potholes in the image.';
+              analysis = 'Model did not detect any potholes in the image.';
             }
             
             return {
@@ -231,8 +231,8 @@ class MLService {
       return this.getFallbackAnalysis('pothole', title, description);
 
     } catch (error) {
-      console.error('❌ SIH Flask YOLO model analysis failed:', error);
-      console.log('💡 Make sure to start your Flask model: cd SIH && python app.py');
+      //console.error('❌ SIH Flask  model analysis failed:', error);
+      //console.log('💡 Make sure to start your Flask model: cd SIH && python app.py');
       return this.getDefaultMLResult('pothole', error.message);
     }
   }
