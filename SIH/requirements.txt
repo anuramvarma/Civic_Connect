@@ -1,0 +1,9 @@
+flask
+pymongo
+ultralytics
+opencv-python
+torch
+torchvision
+numpy
+requests
+gunicorn
