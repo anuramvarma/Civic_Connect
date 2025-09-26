@@ -1482,7 +1482,7 @@ section h2 {
   display: flex;
   align-items: end;
   justify-content: space-around;
-  padding: 20px;
+  padding: 4px;
   background: #f8fafc;
   border-radius: 8px;
 }
@@ -1493,7 +1493,7 @@ section h2 {
   gap: 20px;
   height: 100%;
   width: 100%;
-  padding: 20px;
+  padding: 0px;
 }
 
 .bar-group {

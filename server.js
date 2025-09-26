@@ -7,7 +7,7 @@ const { type } = require('os');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT
 
 // Middleware
 app.use(cors());
@@ -47,7 +47,7 @@ const upload = multer({
 });
 
 // MongoDB Connection
-const MONGODB_URI = 'mongodb+srv://SIH:sih2025@sih.ouvirm3.mongodb.net/Civic_Connect';
+const MONGODB_URI =process.env.mongouri
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
@@ -931,32 +931,32 @@ app.get('/api/analytics', async (req, res) => {
         case 'completed':
         case 'resolved':
         case 'fixed':
-          normalizedStatus = 'completed';
+          normalizedStatus = 'Completed';
           break;
         case 'pending':
         case 'new':
         case 'submitted':
-          normalizedStatus = 'pending';
+          normalizedStatus = 'Pending';
           break;
         case 'in-progress':
         case 'in progress':
         case 'processing':
         case 'working':
-          normalizedStatus = 'in-progress';
+          normalizedStatus = 'In-progress';
           break;
         case 'received':
         case 'acknowledged':
         case 'accepted':
-          normalizedStatus = 'received';
+          normalizedStatus = 'Received';
           break;
         case 'rejected':
         case 'not accepted':
         case 'denied':
-          normalizedStatus = 'rejected';
+          normalizedStatus = 'Rejected';
           break;
         case 'assigned':
         case 'allocated':
-          normalizedStatus = 'assigned';
+          normalizedStatus = 'Assigned';
           break;
         default:
           normalizedStatus = 'unknown';
